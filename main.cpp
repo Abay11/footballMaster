@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -10,8 +11,8 @@ enum LEAGES{RFPL, BL, LL, SA, APL};
 const vector<string> LEAGES_NAMES = {"RFPL", "BL", "LL", "SA", "APL"};
 const vector<int> LEAGES_SIZE = {16, 18, 20, 20, 20};
 enum CLUB_COUNT{FIRST_CLUB, SECOND_CLUB, THIRD_CLUB};
-map<int, string> RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE;
-vector< map<int, string> > TABLES = {RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE};
+map<int, pair<int, string> > RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE; // posit, point, title
+vector< map<int, pair<int, string> > > TABLES = {RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE};
 
 const std::string RFPL_URL = "http://www.eurosport.ru/football/russian-football-premier-league/standing.shtml",
         BL_URL = "http://www.eurosport.ru/football/bundesliga/standing.shtml",
@@ -23,12 +24,12 @@ const std::string RFPL_URL = "http://www.eurosport.ru/football/russian-football-
 //std::pair<std::string[3], int[3]> Alim[5];
 
 void getDoc(const string&, int); //url, which champ
-void parseDoc(const string&, map<int, string>&, int); //html, champ_table, which
+void parseDoc(const string&, map<int, pair<int, string> >&, int); //html, champ_table, which
 
 struct Profile{
     string name;
     unsigned int point = 0;
-    pair<string, int> CLUBS[5][3]; //championat, clubs
+    pair<string, pair<int, int> > CLUBS[5][3]; //club, posit, point
 
     Profile(const string &str) : name(str){};
 };
@@ -48,28 +49,34 @@ void countPoint(const Profile&, const Profile &);
 void countPoint(const Profile &a, const Profile &b){}
 
 int main() {
-    initProfiles();
 
     parseDoc(LEAGES_NAMES[RFPL], TABLES[RFPL], RFPL);
+
+    initProfiles();
 
     for (int i = 0; i < 5; ++i) {
         for (auto item : TABLES[i]) {
             for (int j = 0; j < 3; ++j) {
-                if(item.second == Murat.CLUBS[i][j].first)
-                    Murat.CLUBS[i][j].second = item.first;
+                if(item.second.second == Murat.CLUBS[i][j].first) { //TABLE.second.STRING
+                    Murat.CLUBS[i][j].second.first = item.first; //posit
+                    Murat.CLUBS[i][j].second.second = item.second.first; //point
+                }
             }
         }
     }
 
     for (int i = 0; i < 1; ++i) {
         for (int j = 0; j < 3; ++j) {
-            cout << Murat.CLUBS[i][j].first << " "  << Murat.CLUBS[i][j].second << endl;
+            //1. POSIT 2. TITLE 3. POINTS
+            cout << Murat.CLUBS[i][j].second.first << ". " <<
+            setw(15) << left << Murat.CLUBS[i][j].first  << " " <<
+            Murat.CLUBS[i][j].second.second << endl;
         }
     }
-
-//    for (auto item : TABLES[RFPL]){
-//        cout << item.first << " " << item.second << endl;
-//    }
+/*
+    for (auto item : TABLES[RFPL]){
+        cout << item.first << " " << item.second.second << " " << item.second.first << endl;
+    }*/
     /*getDoc(RFPL_URL, RFPL);
     getDoc(BL_URL, BL);
 
@@ -92,11 +99,15 @@ void getDoc(const string& url, const int WHICH){
     system(stream.str().c_str());
 }
 
-void parseDoc(const string& html, map<int, string>& table, int which){
+void parseDoc(const string& html, map<int, pair<int, string> >& table, int which){
 
     std::string text = "", line, name;
 
     ifstream fileHTML(LEAGES_NAMES[which]);
+    if(!fileHTML.is_open()){
+        cerr << "Ошибка открытия файла.\n";
+        return;
+    }
 
     while(getline(fileHTML, line)){
         text += line;
@@ -119,18 +130,20 @@ void parseDoc(const string& html, map<int, string>& table, int which){
 
 
         while(text[titPos] != '<'){
-            findTitle += text.substr(titPos, 1); titPos++;
+            findTitle += text.substr(titPos, 1);
+            titPos++;
+
         }
 
-        while(text[titPos] != '<'){
-            findPoint += text.substr(pointPos, 1); pointPos++;
+        while(text[pointPos] != '<'){
+            if(pointPos < text.size())findPoint += text.substr(pointPos, 1); pointPos++;
         }
 
         findTabLoc += text[locPos];
         if(i > 8)
             findTabLoc += text[locPos + 1];
 
-        table.insert(pair<int, string>(stoi(findTabLoc), findTitle));
+        table.insert(pair<int, pair<int, string> >(stoi(findTabLoc), pair<int, string>(stoi(findPoint), findTitle) ) );
         ++i;
     }
     fileHTML.close();
