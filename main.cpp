@@ -46,27 +46,8 @@ bool getTotalScore(const Profile&, const Profile&);
 
 void removeFiles();
 
-void printPlayersStat(const Profile& prof){
-    cout << prof.name << ":" << endl;
-    for (int i = 0; i < 5; ++i) {
-        cout.width(31);
-        cout << left;
-        cout <<  LEAGES_NAMES[i];
-    }
-    cout << endl;
-    for (int j = 0; j < 2; ++j) {
-        for (int i = 0; i < 5; ++i) {
-            cout << setw(2);
-            cout << to_string(prof.CLUBS[i][j].second.first) << ". ";
+void printPlayersStat(const Profile&);
 
-            cout << setw(20);
-            cout << prof.CLUBS[i][j].first << " ";
-            cout << to_string(prof.CLUBS[i][j].second.second) << " ";
-        }
-        cout << endl;
-    }
-    cout << endl << endl;
-}
 
 int main() {
 
@@ -102,6 +83,36 @@ int main() {
 
     return 0;
 }
+void printPlayersStat(const Profile& prof){
+    cout << prof.name << ":" << endl;
+    cout.width(13); cout << left << "Championat";
+    cout.width(7); cout << "Pos.";
+    cout.width(7); cout << left << "Point";
+    cout.width(5); cout << "Club";
+    cout << endl;
+
+    for (int i = 0; i < 5; ++i) {
+        cout.width(13);
+        cout << left;
+        cout << LEAGES_NAMES[i];
+
+        for (int j = 0; j < 3; ++j) {
+            cout.width(7);
+            string str = to_string(prof.CLUBS[i][j].second.first) + ".";
+            cout << left << str;
+
+            cout.width(7);
+            str = to_string(prof.CLUBS[i][j].second.second) + ".";
+            cout << left << str;
+
+            cout << prof.CLUBS[i][j].first << endl;
+
+            cout.width(13); cout << "";
+        }
+        cout << endl;
+    }
+}
+
 
 void getDoc(const string& url, const int WHICH){
     ifstream file;
