@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 
+
 using namespace std;
 
 enum LEAGES{RFPL, BL, LL, SA, APL};
@@ -48,17 +49,19 @@ void removeFiles();
 void printPlayersStat(const Profile& prof){
     cout << prof.name << ":" << endl;
     for (int i = 0; i < 5; ++i) {
-        cout.width(25);
-        cout << left <<  LEAGES_NAMES[i];
+        cout.width(31);
+        cout << left;
+        cout <<  LEAGES_NAMES[i];
     }
     cout << endl;
-    for (int j = 0; j < 3; ++j) {
+    for (int j = 0; j < 2; ++j) {
         for (int i = 0; i < 5; ++i) {
+            cout << setw(2);
+            cout << to_string(prof.CLUBS[i][j].second.first) << ". ";
 
-            cout << to_string(prof.CLUBS[i][j].second.first) + ". ";
-            cout.width(20 - prof.CLUBS[i][j].first.size());
-            cout << prof.CLUBS[i][j].first.substr(0, 16) << " " <<
-                         to_string(prof.CLUBS[i][j].second.second) << "\t\t";
+            cout << setw(20);
+            cout << prof.CLUBS[i][j].first << " ";
+            cout << to_string(prof.CLUBS[i][j].second.second) << " ";
         }
         cout << endl;
     }
@@ -67,7 +70,7 @@ void printPlayersStat(const Profile& prof){
 
 int main() {
 
-    removeFiles();
+//    removeFiles();
 
     for (int i = 0; i < 5; ++i) {
         getDoc(URLs[i], i);
@@ -90,11 +93,11 @@ int main() {
     initPoints();
 
     printPlayersStat(Murat);
-    printPlayersStat(Alim);
+//    printPlayersStat(Alim);
 
-    countPoint(Murat, Alim);
+//    countPoint(Murat, Alim);
 
-    getTotalScore(Murat, Alim);
+//    getTotalScore(Murat, Alim);
 
 
     return 0;
