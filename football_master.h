@@ -19,7 +19,7 @@ using namespace std;
 
 enum LEAGES{RFPL, BL, LL, SA, APL};
 enum CLUB_COUNT{FIRST_CLUB, SECOND_CLUB, THIRD_CLUB};
-multimap<int, pair<int, string> > RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE; // posit, point, title
+multimap<int, pair<int, string>> RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE; // posit, point, title
 vector< multimap<int, pair<int, string> > > TABLES = {RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE};
 
 const std::string RFPL_URL = "http://www.eurosport.ru/football/russian-football-premier-league/standing.shtml",
@@ -52,32 +52,44 @@ void printPlayersStat(const Profile& prof){
         if(item.size() == 0)
             for (int i = 0; i < 5; ++i)
                 parseDoc(LEAGES_NAMES[i], item, i);
-
     cout << prof.name << ":" << endl;
     cout.width(13); cout << left << "Championat";
     cout.width(7); cout << "Pos.";
     cout.width(7); cout << left << "Point";
     cout.width(5); cout << "Club" << endl;
 
+    map<int, pair<int, string> >temp[5]; //pos, point, title
+
     for (int i = 0; i < 5; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            temp[i].insert(pair<int, pair<int, string> >(
+                    prof.CLUBS[i][j].second.first,
+                    pair<int, string>(prof.CLUBS[i][j].second.second,
+                                      prof.CLUBS[i][j].first) )
+            );
+        }
+    }
+
+    int i = 0;
+    for (auto now : temp) {
         cout.width(13);
         cout << left;
         cout << LEAGES_NAMES[i];
-
-        for (int j = 0; j < 3; ++j) {
+        for (auto item : now) {
             cout.width(7);
-            string str = to_string(prof.CLUBS[i][j].second.first) + ".";
+            string str = to_string(item.first) + ".";
             cout << left << str;
 
             cout.width(7);
-            str = to_string(prof.CLUBS[i][j].second.second) + ".";
+            str = to_string(item.second.first) + ".";
             cout << left << str;
 
-            cout << prof.CLUBS[i][j].first << endl;
+            cout << item.second.second << endl;
 
             cout.width(13); cout << "";
         }
         cout << endl;
+        ++i;
     }
 }
 
