@@ -1,10 +1,5 @@
 #include "football_master.h"
-#include <cstdlib>
-#include <ctime>
-#include <zconf.h>
-#include <cstring>
-#include <string>
-#include <iostream>
+
 
 bool getUserAnswer(){
     system("clear");
@@ -27,8 +22,6 @@ bool getUserAnswer(){
     switch((c)){
         case 0:
             system("clear");
-            system("exit");
-            return false;
             break;
         case 1:
             initPoints();
@@ -47,8 +40,6 @@ bool getUserAnswer(){
             getUserAnswer();
             break;
         case 3:
-            for (int i = 0; i < 5; ++i) getDoc(URLs[i], i);
-            for (int i = 0; i < 5; ++i) parseDoc(LEAGES_NAMES[i], TABLES[i], i);
             initPoints();
             system("clear");
             countPoint(Murat, Alim);
@@ -58,41 +49,39 @@ bool getUserAnswer(){
             getUserAnswer();
             break;
         case 4:
-            system("clear");
-            cout << "1. РФПЛ" << endl;
-            cout << "2. Бундес Лига" << endl;
-            cout << "3. Ла Лига" << endl;
-            cout << "4. Серия А" << endl;
-            cout << "5. АПЛ" << endl;
-            cout << "0. Вернуться назад" << endl;
-            cout << "Сделайте свой выбор: " << endl;
-
-            cin >> c;
-
-            if((c) == 0)
-                getUserAnswer();
-            else if(c > 0 && c <= 5){
+            while(true) {
                 system("clear");
-                printStanding(c - 1);
-                getline(cin, temp); getline(cin, temp);
-                getUserAnswer();
+                cout << "1. РФПЛ" << endl;
+                cout << "2. Бундес Лига" << endl;
+                cout << "3. Ла Лига" << endl;
+                cout << "4. Серия А" << endl;
+                cout << "5. АПЛ" << endl;
+                cout << "0. Вернуться назад" << endl;
+                cout << "Сделайте свой выбор: ";
 
+                cin >> c;
+
+                if ((c) == 0)
+                    break;
+                else if (c > 0 && c <= 5) {
+                    system("clear");
+                    printStanding(c - 1);
+                    getline(cin, temp); getline(cin, temp);
+                } else {
+                    cout << "\nНесерьезный ты человек... Возвращаю тебя на главную\n";
+                    sleep(2);
+                    system("clear");
+                    break;
+                }
             }
-            else {
-                cout << "Ты несерьезный человек... Возвращаю тебя на главную";
-                sleep(2);
-                getUserAnswer();
-            }
+            getUserAnswer();
             break;
         case 5:
             system("clear");
             removeFiles();
-            for (int i = 0; i < 5; ++i) getDoc(URLs[i], i);
-            parsed = false;
-            for (int i = 0; i < 5; ++i) parseDoc(LEAGES_NAMES[i], TABLES[i], i);
+            for (int i = 0; i < 5; ++i) TABLES[i].clear();
             initPoints();
             cout << "\nДанные успешно обновлены!\n";
-            for (int i = 0; i < 5; ++i) TABLES[i].clear();
             sleep(2);
             system("clear");
             getUserAnswer();
@@ -108,15 +97,6 @@ bool getUserAnswer(){
 
 
 int main() {
- /*   for (int i = 0; i < 5; ++i) {
-        getDoc(URLs[i], i);
-    }
-    for (int i = 0; i < 5; ++i) {
-        parseDoc(LEAGES_NAMES[i], TABLES[i], i);
-    }
-
-    printStanding(2);*/
-    do{}
-    while(getUserAnswer());
+    getUserAnswer();
     return 0;
 }

@@ -6,30 +6,32 @@
 #define FOOTBALL_MASTER_FOOTBALL_MASTER_H
 
 #include <iostream>
-#include <map>
-#include <sstream>
-#include <vector>
-#include <fstream>
 #include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <zconf.h>
+
+#include <map>
+
+#include <vector>
 
 using namespace std;
 
 enum LEAGES{RFPL, BL, LL, SA, APL};
-const vector<string> LEAGES_NAMES = {"RFPL", "BundesLiga", "LaLiga", "SeriaA", "APL"};
-const vector<int> LEAGES_SIZE = {16, 18, 20, 20, 20};
 enum CLUB_COUNT{FIRST_CLUB, SECOND_CLUB, THIRD_CLUB};
 multimap<int, pair<int, string> > RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE; // posit, point, title
 vector< multimap<int, pair<int, string> > > TABLES = {RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE};
-
-bool parsed = false;
-
 
 const std::string RFPL_URL = "http://www.eurosport.ru/football/russian-football-premier-league/standing.shtml",
         BL_URL = "http://www.eurosport.ru/football/bundesliga/standing.shtml",
         LL_URL = "http://www.eurosport.ru/football/la-liga/standing.shtml",
         SA_URL = "http://www.eurosport.ru/football/serie-a/standing.shtml",
         APL_URL = "http://www.eurosport.ru/football/premier-league/standing.shtml";
+
+const vector<string> LEAGES_NAMES = {"RFPL", "BundesLiga", "LaLiga", "SeriaA", "APL"};
 const vector<string> URLs = {RFPL_URL, BL_URL, LL_URL, SA_URL, APL_URL};
+
+const vector<int> LEAGES_SIZE = {16, 18, 20, 20, 20};
 
 void getDoc(const string&, int); //url, which champ
 void parseDoc(const string&, multimap<int, pair<int, string> >&, int); //html, champ_table, which
@@ -41,6 +43,7 @@ struct Profile{
 
     Profile(const string &str) : name(str){};
 };
+
 Profile Murat("Murat");
 Profile Alim("Alim");
 
@@ -54,8 +57,7 @@ void printPlayersStat(const Profile& prof){
     cout.width(13); cout << left << "Championat";
     cout.width(7); cout << "Pos.";
     cout.width(7); cout << left << "Point";
-    cout.width(5); cout << "Club";
-    cout << endl;
+    cout.width(5); cout << "Club" << endl;
 
     for (int i = 0; i < 5; ++i) {
         cout.width(13);
@@ -88,9 +90,6 @@ void getDoc(const string& url, const int WHICH){
         stream << "curl > " << LEAGES_NAMES[WHICH] << " -# " + url;
         cout << "Соединение с сервером. Попытка скачать данные " << LEAGES_NAMES[WHICH] << ". Пожалуйста ждите...\n";
         system(stream.str().c_str());
-    }
-    else {
-        cout << "file exists\n";
     }
 }
 
@@ -228,10 +227,9 @@ void removeFiles(){
 
 void initPoints(){
 
-    for (int i = 0; i < 5; ++i) {
-        if(TABLES[i].size() == 0);
+    for (int i = 0; i < 5; ++i)
+        if (TABLES[i].size() == 0)
             parseDoc(LEAGES_NAMES[i], TABLES[i], i);
-    }
 
     for (int i = 0; i < 5; ++i) {
         for (auto item : TABLES[i]) {
@@ -251,11 +249,21 @@ void initPoints(){
 
 void printStanding(int which){
     if(TABLES[which].size() == 0) {
-        cout << "table null" << endl;
         parseDoc(LEAGES_NAMES[which], TABLES[which], which);
     }
-    for (auto now : TABLES[which])
-        cout << now.first << " " << now.second.second << " " << now.second.first << endl;
+    cout.width(5);
+    cout << left << "Pos.";
+    cout.width(7);
+    cout << "Point";
+    cout << left << "Club" << endl;
+    for (auto now : TABLES[which]) {
+        cout.width(5);
+        string t = to_string(now.first) + ".";
+        cout << left << t;
+        cout.width(7);
+        cout << left << now.second.first;
+        cout << now.second.second << endl;
+    }
 }
 
 #endif //FOOTBALL_MASTER_FOOTBALL_MASTER_H
