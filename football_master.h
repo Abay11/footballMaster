@@ -22,11 +22,11 @@ enum CLUB_COUNT{FIRST_CLUB, SECOND_CLUB, THIRD_CLUB};
 multimap<int, pair<int, string>> RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE; // posit, point, title
 vector< multimap<int, pair<int, string> > > TABLES = {RFPL_TABLE, BL_TABLE, LL_TABLE, SA_TABLE, APL_TABLE};
 
-const std::string RFPL_URL = "http://www.eurosport.ru/football/russian-football-premier-league/standing.shtml",
-        BL_URL = "http://www.eurosport.ru/football/bundesliga/standing.shtml",
-        LL_URL = "http://www.eurosport.ru/football/la-liga/standing.shtml",
-        SA_URL = "http://www.eurosport.ru/football/serie-a/standing.shtml",
-        APL_URL = "http://www.eurosport.ru/football/premier-league/standing.shtml";
+const std::string RFPL_URL = "https://www.eurosport.ru/football/russian-football-premier-league/standing.shtml",
+        BL_URL = "https://www.eurosport.ru/football/bundesliga/standing.shtml",
+        LL_URL = "https://www.eurosport.ru/football/la-liga/standing.shtml",
+        SA_URL = "https://www.eurosport.ru/football/serie-a/standing.shtml",
+        APL_URL = "https://www.eurosport.ru/football/premier-league/standing.shtml";
 
 const vector<string> LEAGES_NAMES = {"RFPL", "BundesLiga", "LaLiga", "SeriaA", "APL"};
 const vector<string> URLs = {RFPL_URL, BL_URL, LL_URL, SA_URL, APL_URL};
